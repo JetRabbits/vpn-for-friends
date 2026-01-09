@@ -110,4 +110,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 yearSpan.textContent = new Date().getFullYear();
             });
     }
+
+    // Google Analytics Event Tracking
+    // Track clicks on all elements with data-ga-* attributes
+    document.addEventListener('click', (e) => {
+        // Find the closest element with GA attributes (to support clicks on child elements)
+        const target = e.target.closest('[data-ga-event]');
+
+        if (target && typeof gtag === 'function') {
+            const event = target.getAttribute('data-ga-event');
+            const button = target.getAttribute('data-ga-button');
+            const location = target.getAttribute('data-ga-location');
+
+            // Send event to Google Analytics
+            gtag('event', event, {
+                'event_category': location,
+                'event_label': button,
+                'button_name': button,
+                'button_location': location
+            });
+
+            // Optional: log to console for debugging (can be removed in production)
+            console.log('GA Event:', { event, location, button });
+        }
+    }, true); // Use capture phase to ensure we catch all events
 });
